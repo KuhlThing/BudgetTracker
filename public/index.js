@@ -1,6 +1,14 @@
 let transactions = [];
 let myChart;
 
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+      navigator.serviceWorker.register("service-worker.js").then(reg => {
+          console.log("We found your service worker file!", reg);
+      });
+  });
+}
+
 fetch("/api/transaction")
   .then(response => {
     return response.json();
@@ -8,7 +16,6 @@ fetch("/api/transaction")
   .then(data => {
     // save db data on global variable
     transactions = data;
-
     populateTotal();
     populateTable();
     populateChart();
@@ -145,9 +152,11 @@ function sendTransaction(isAdding) {
 }
 
 document.querySelector("#add-btn").onclick = function() {
+  event.preventDefault();
   sendTransaction(true);
 };
 
 document.querySelector("#sub-btn").onclick = function() {
+  event.preventDefault();
   sendTransaction(false);
 };
